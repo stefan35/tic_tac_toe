@@ -4,7 +4,7 @@ Tic Tac Toe game is written in JavaScript using JQuery. In this game you can pla
 
 ### How to run
 
-Doule click on file index.html to play. Control only with you mouse.
+Doule click on file index.html to play. Control only with mouse.
 
 #### Menu Screen
 ![](img/menu.png)
