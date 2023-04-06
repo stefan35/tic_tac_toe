@@ -156,13 +156,13 @@
     pointer-events: auto;
     transform: translate(-50%, -50%) scale(1);
   }
-  .result-box .won-text{
+  .result-box .win-text{
     font-size: 180%;
     font-weight: 500;
     display: flex;
     justify-content: center;
   }
-  .result-box .won-text p{
+  .result-box .win-text p{
     font-weight: 600;
     margin: 0 3%;
   }

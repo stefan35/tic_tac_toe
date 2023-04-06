@@ -1,61 +1,59 @@
-const selectBoxGame = document.querySelector(".select-box-type")
-selectBtnPlayer = selectBoxGame.querySelector(".options .vsPlayer"),
-selectBtnBot = selectBoxGame.querySelector(".options .vsBot"),
-selectBtnX = selectBoxGame.querySelector(".options .playerX"),
-selectBtnO = selectBoxGame.querySelector(".options .playerO"),
-startBtn = selectBoxGame.querySelector(".start-game"),
-playBoard = document.querySelector(".play-board"),
-players = document.querySelector(".players"),
-allBox = document.querySelectorAll("section span"),
-resultBox = document.querySelector(".result-box"),
-wonText = resultBox.querySelector(".won-text"),
-replayBtn = resultBox.querySelector("button");
+var selectBtnPlayer = ".vsPlayer",
+selectBtnBot = ".vsBot",
+selectBtnX = ".playerX",
+selectBtnO = ".playerO",
+playBoard = ".play-board",
+players = ".players",
+allBoxes = "section span",
+selectBox = ".select-box-type",
+winText = ".win-text",
+result = ".result-box";
 
-let playerSign = null;
-let game_type = null;
+var playerSign = null;
+var game_type = null;
 
-selectBtnPlayer.onclick = () =>{
-    selectBtnPlayer.style.background = "#95a5a6"
-    selectBtnBot.style.background = "#2D414B"
-    game_type = "player";
-}
+$(document).on('click','.vsPlayer',function(){
+    $(selectBtnPlayer).css({'background': "#95a5a6"})
+    $(selectBtnBot).css({'background': "#2D414B"})
+    game_type = "player"
+})
 
-selectBtnBot.onclick = () =>{
-    selectBtnPlayer.style.background = "#2D414B"
-    selectBtnBot.style.background = "#95a5a6"
+$(document).on('click','.vsBot',function(){
+    $(selectBtnPlayer).css({'background': "#2D414B"})
+    $(selectBtnBot).css({'background': "#95a5a6"})
     game_type = "bot";
-}
+})
 
-selectBtnX.onclick = () =>{
-    selectBtnX.style.background = "#95a5a6"
-    selectBtnO.style.background = "#2D414B"
-    playerSign = "X"
-}
+$(document).on('click','.playerX',function(){
+    $(selectBtnX).css({'background': "#95a5a6"})
+    $(selectBtnO).css({'background': "#2D414B"})
+    playerSign = "X";
+})
 
-selectBtnO.onclick = () =>{
-    selectBtnX.style.background = "#2D414B"
-    selectBtnO.style.background = "#95a5a6"
-    playerSign = "O"
-}
+$(document).on('click','.playerO',function(){
+    $(selectBtnX).css({'background': "#2D414B"})
+    $(selectBtnO).css({'background': "#95a5a6"})
+    playerSign = "O";
+})
 
-startBtn.onclick = () =>{
-    if(playerSign === "O"){
-        players.setAttribute("class", "players active player");
-    }
+$(document).on('click','.start-game',function(){
+    if(playerSign == null || game_type == null)
+        return
 
-    for (let i = 0; i < allBox.length; i++) {
-        if(game_type === "bot"){
-                allBox[i].setAttribute("onclick", "clickedBoxBotGame(this)");
-        }
-        else if(game_type === "player"){
-                allBox[i].setAttribute("onclick", "clickedBoxPlayerGame(this)");
-        }
-    }
+    if(playerSign === "O")
+        $(players).addClass("players active player");
 
-    selectBoxGame.classList.remove("show");
-    selectBoxGame.classList.add("hide");
-    playBoard.classList.add("show");
-}
+    $(allBoxes).each(function(index, obj){
+        if(game_type === "bot")
+            $(obj).attr("onclick", "clickedBoxBotGame(this)");
+        else if(game_type === "player")
+            $(obj).attr("onclick", "clickedBoxPlayerGame(this)");
+    })
+    
+    $(selectBox).removeClass('show');
+    $(selectBox).addClass('hide');
+    $(playBoard).addClass("show");
+})
 
 function clickedBoxPlayerGame(element){
     if(playerSign === "O"){
@@ -63,40 +61,42 @@ function clickedBoxPlayerGame(element){
 
         element.innerHTML = `<i>O</i>`;
         element.setAttribute("id", playerSign);
-        players.classList.remove("active");
+        $(players).removeClass("active");
         selectWinner();
+
         playerSign = "X";
     }else{
         playerSign = "X";
 
         element.innerHTML = `<i>X</i>`;
         element.setAttribute("id", playerSign);
-        players.classList.add("active");
+        $(players).addClass("active");
         selectWinner();
+
         playerSign = "O";
     }
 
     element.style.pointerEvents = "none";
-    playBoard.style.pointerEvents = "auto";
+    $(playBoard).css('pointer-events','auto');
 }
 
 function clickedBoxBotGame(element){
-    if(players.classList.contains("player")){
+    if($(players).hasClass("player")){
         playerSign = "O";
 
         element.innerHTML = `<i>O</i>`;
         element.setAttribute("id", playerSign);
-        players.classList.remove("active");
+        $(players).removeClass("active");
         
     }else{
         element.innerHTML = `<i>X</i>`;
         element.setAttribute("id", playerSign);
-        players.classList.add("active");
+        $(players).addClass("active");
     }
     selectWinner();
 
     element.style.pointerEvents = "none";
-    playBoard.style.pointerEvents = "none";
+    $(playBoard).css('pointer-events','none');
 
     let randomTimeDelay = ((Math.random() * 1000) + 200).toFixed();
     setTimeout(()=>{
@@ -107,36 +107,37 @@ function clickedBoxBotGame(element){
 function bot(){
     let array = [];
 
-    for (let i = 0; i < allBox.length; i++) {
-        if(allBox[i].childElementCount == 0){
-            array.push(i);
+    $(allBoxes).each(function(index, obj){
+        if(!$(obj).attr('id')){
+            array.push(index);
         }
-    }
+    })
 
     let randomBox = array[Math.floor(Math.random() * array.length)];
+    var arrAllBoxes = $(allBoxes).map(function (){ return this; }).get();
 
-    if(array.length > 0){
-        if(players.classList.contains("player")){ 
-            players.classList.add("active");
+   if(array.length > 0){
+        if($(players).hasClass("player")){ 
+            $(players).addClass("active");
             playerSign = "X";
-            allBox[randomBox].innerHTML = `<i>X</i>`;
-            allBox[randomBox].setAttribute("id", playerSign);    
+            arrAllBoxes[randomBox].innerHTML = `<i>X</i>`;
+            arrAllBoxes[randomBox].setAttribute("id", playerSign);    
         }else{
-            players.classList.remove("active");
+            $(players).removeClass("active");
             playerSign = "O";
-            allBox[randomBox].innerHTML = `<i>O</i>`;
-            allBox[randomBox].setAttribute("id", playerSign);  
+            arrAllBoxes[randomBox].innerHTML = `<i>O</i>`;
+            arrAllBoxes[randomBox].setAttribute("id", playerSign);  
         }
         selectWinner();
     }
 
     playerSign = "X";
-    allBox[randomBox].style.pointerEvents = "none";
-    playBoard.style.pointerEvents = "auto";
+    arrAllBoxes[randomBox].style.pointerEvents = "none";
+    $(playBoard).css('pointer-events','auto');
 }
 
 function getIdVal(class_name){
-    return document.querySelector(".box" + class_name).id;
+    return $(".box"+class_name)[0].id;
 }
 
 function checkIdSign(val1, val2, val3, sign){ 
@@ -148,21 +149,21 @@ function checkIdSign(val1, val2, val3, sign){
 function selectWinner(){
     if(checkIdSign(1, 2, 3, playerSign) || checkIdSign(4, 5, 6, playerSign) || checkIdSign(7, 8, 9, playerSign) || checkIdSign(1, 4, 7, playerSign) || checkIdSign(2, 5, 8, playerSign) || checkIdSign(3, 6, 9, playerSign) || checkIdSign(1, 5, 9, playerSign) || checkIdSign(3, 5, 7, playerSign)){
         setTimeout(()=>{
-            resultBox.classList.add("show");
-            playBoard.classList.remove("show");
+            $(result).addClass("show");
+            $(playBoard).removeClass("show");
         }, 300);
-        wonText.innerHTML = `Player <p>${playerSign}</p> won the game!`;
+        $(winText).html(`Player <p>${playerSign}</p> won the game!`);
     }else{
         if(getIdVal(1) != "" && getIdVal(2) != "" && getIdVal(3) != "" && getIdVal(4) != "" && getIdVal(5) != "" && getIdVal(6) != "" && getIdVal(7) != "" && getIdVal(8) != "" && getIdVal(9) != ""){
             setTimeout(()=>{
-                resultBox.classList.add("show");
-                playBoard.classList.remove("show");
+                $(result).addClass("show");
+                $(playBoard).removeClass("show");
             }, 300);
-            wonText.textContent = "Match has been drawn!";
+            $(winText).text("Match has been drawn!");
         }
     }
 }
 
-replayBtn.onclick = ()=>{
+$(document).on('click','.btn',function(){
     window.location.reload();
-}
+})
